@@ -85,7 +85,7 @@ footer{
     animation: fadeInUp 1.5s ease-out forwards;
 }
 .movie-card:hover{
-    box-shadow: 8px 8px 16px 14px rgb(136, 223, 255);
+    box-shadow: 0px 8px 16px rgba(136, 223, 255, 0.6);
 }
 .movie-card img{
     width: 100%;
@@ -115,7 +115,7 @@ footer{
 @keyframes fadeInUp{
     from {
         opacity: 0;
-        transform: translateY(20);
+        transform: translateY(20px);
     }
     to{
         opacity: 1;
@@ -133,7 +133,7 @@ footer{
     font-family: arial;
     font-size: 36px;
     margin-bottom: 20px;
-    font-weight: 400px;
+    font-weight: 400;
 }
 .form-container{
     background-color: white;
@@ -190,7 +190,19 @@ footer{
   padding-top: 6px;
   padding-bottom: 8px;
 }
-/*details-dark-knight======================================*/
+/*details-movie======================================*/
+.movie-details-body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+.movie-details-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .movie-details-container {
   /* Layout com Flexbox */
   display: flex;
@@ -204,7 +216,7 @@ footer{
   box-shadow: 0px 4px 4px 0px #00000040;
 }
 .movie-poster {
-  flex-shrink: 0; 
+  flex-shrink: 0 0 380px; 
 }
 
 .movie-poster img {
@@ -286,4 +298,15 @@ footer{
      .movie-details-info p {
         font-size: 16px;
     }
+        .movie-details-body {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .movie-poster {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 380px;
+    }
+
 }

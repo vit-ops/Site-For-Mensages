@@ -3,7 +3,7 @@
     {% block content %}
     <div class="movie-list-container">
         {% for movie in movies %}
-        <a href="#" class="movie-card-link">
+        <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="movie-card-link">
             <div class="movie-card">
                 <img src="{{ movie.image_url }}" alt="poster for {{ movie.title }}" />
                 <h3>{{ movie.title }}</h3>

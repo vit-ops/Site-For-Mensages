@@ -1,44 +1,29 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Movie Library - Add New Review</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
-  <body>
-    <header>
-      <div>
-        <a href="../index.html">
-          <img src="../assets/images/mlib-icon.svg" alt="Mlib Logo Icon" height="32" />
-        </a>
-        <span>Mlib</span>
-      </div>
-      <nav>
-        <a href="add-review.html">
-          <button class="add-button" aria-label="Add new movie review">+</button>
-        </a>
-      </nav>
-    </header>
+{% extends "layout.html" %}
 
-    <main class="content">
-        <div class="form-page-container">
-            <h2>New Review</h2>
-            <div class="form-container">
-                <form>
+{% block title %}Add New Movie Review - My Movie Library{% endblock %}
+
+{% block content %}
+<div class="form-page-container">
+    <h2>New Review</h2>
+    <div class="form-container">
+        <form action="{{ url_for('add_review') }}" method="POST">
+
+            <div class="form-group">
+                <label for="title">Movie Name</label>
+                <input type="text" id="title" name="title" placeholder="Enter the movie title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="poster_url">Poster URL</label>
+                <input type="url" id="poster_url" name="poster_url" placeholder="https://example.com/poster.jpg"
+                    required>
+            </div>
+
+            <div class="form-row">
                 <div class="form-group">
-                    <label for="movie-name">Movie Name</label>
-                    <input type="text" id="movie-name" placeholder="Enter the movie title">
-                </div>
-                <div class="form-group">
-                    <label for="poster-url">Poster URL</label>
-                    <input type="text" id="poster-url" placeholder="Paste image URL (jpg or png)">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="rating-select">Stars</label>
-                        <select id="rating-select">
-                        <option value="">Choose a rating</option>
+                    <label for="rating">Stars</label>
+                    <select id="rating" name="rating" required>
+                        <option value="" disabled selected>Choose a rating</option>
                         <option value="1">★☆☆☆☆ - 1 Star</option>
                         <option value="2">★★☆☆☆ - 2 Stars</option>
                         <option value="3">★★★☆☆ - 3 Stars</option>
@@ -46,23 +31,20 @@
                         <option value="5">★★★★★ - 5 Stars</option>
                     </select>
                 </div>
-                <div class="form-group">
-                <label for="watched-date">Watched Date</label>
-                <input type="date" id="watched-date">
-            </div>
-            </div>
-        <div class="form-group">
-            <label for="review-text">My Review</label>
-            <textarea id="review-text" rows="5" placeholder="Write your thoughts here..."></textarea>
-        </div>
-        <button type="submit" class="submit-button">Add</button>
-                </form>
-            </div>
-        </div>
-    </main>
 
-    <footer>
-      <p>&copy; 2025 Mlib &ndash; My Movie Library</p>
-    </footer>
-  </body>
-</html>
+                <div class="form-group">
+                    <label for="watched_date">Watched Date</label>
+                    <input type="date" id="watched_date" name="watched_date" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="review">My Review</label>
+                <textarea id="review" name="review" rows="5" placeholder="Write your thoughts here..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">Add Review</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
