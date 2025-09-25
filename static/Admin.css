@@ -1,0 +1,180 @@
+/* Reset e corpo */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #00fff7;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #00fff7;
+    text-align: center;
+}
+
+/* Painel superior: registro e busca lado a lado */
+.painel-superior {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1100px;
+    margin-bottom: 40px;
+}
+
+/* Formulários */
+.formulario {
+    background: rgba(30, 30, 60, 0.8);
+    padding: 25px 20px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 0 15px rgba(0, 255, 247, 0.15);
+}
+
+input {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 2px solid #00fff7;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #ff00ff;
+    outline: none;
+}
+
+/* Botões */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00fff7, #ff00ff);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #00c8ff, #cc00cc);
+}
+
+/* Botão vermelho para devolver */
+.devolver-btn {
+    background: #ff4d4d !important;
+    color: white !important;
+}
+
+.devolver-btn:hover {
+    background: #cc0000 !important;
+}
+
+/* Tabela */
+table {
+    margin: 20px auto 40px auto;
+    width: 100%;
+    max-width: 1100px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 255, 247, 0.1);
+    background: rgba(30,30,60,0.85);
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 255, 247, 0.1);
+    font-size: 15px;
+}
+
+th {
+    background: #00c8ff;
+    color: #000;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+/* Modal */
+#modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#modal.show {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+}
+
+#modal .content {
+    background: rgba(20, 20, 40, 0.95);
+    padding: 25px 20px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    color: #e0e0e0;
+    border: 1px solid rgba(0, 255, 247, 0.3);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+#modal.show .content {
+    transform: scale(1);
+}
+
+#modal h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+}
+
+#modal p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+#modal button {
+    margin-top: 15px;
+}

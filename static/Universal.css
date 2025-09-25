@@ -1,0 +1,90 @@
+/* Aplica box-sizing em todos os elementos */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.background-img {
+    position: fixed;          /* fixa na viewport, não sai do lugar */
+    top: 0;
+    left: 0;
+    width: 100vw;             /* largura total da viewport */
+    height: 100vh;            /* altura total da viewport */
+    background-image: url('/static/images/image.png');
+    background-size: cover;   /* cobre todo o espaço, mantendo proporção */
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: -1;              /* fica atrás dos outros elementos */
+    backdrop-filter: blur(5px); /* desfoca o conteúdo atrás (se quiser) */
+}
+
+
+div {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px); /* Translucidez suave para o fundo */
+    color: #121212;
+}
+
+h2 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+input, button {
+    width: 100%; /* agora respeita a largura da div */
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.7); /* Fundo transparente para inputs */
+    color: #121212;
+}
+
+input:focus, button:focus {
+    outline: none;
+    border-color: #555;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.8); /* Quando estiver focado, fica um pouco mais opaco */
+}
+
+button {
+    background-color: #121212;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #fa5050;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+.L1::placeholder {
+    color: #888;
+}
