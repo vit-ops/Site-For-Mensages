@@ -9,30 +9,35 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'DM Sans', sans-serif;
-    overflow: hidden;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    position: relative;
 }
 
+/* Fundo com imagem */
+/* Fundo com imagem */
 .background-img {
-    position: fixed;          /* fixa na viewport, não sai do lugar */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;             /* largura total da viewport */
-    height: 100vh;            /* altura total da viewport */
+    width: 100vw;
+    height: 100vh;
     background-image: url('/static/images/image.png');
-    background-size: cover;   /* cobre todo o espaço, mantendo proporção */
-    background-position: center center;
+    background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
-    z-index: -1;              /* fica atrás dos outros elementos */
-    backdrop-filter: blur(5px); /* desfoca o conteúdo atrás (se quiser) */
+    display: flex;                 /* ativa flexbox */
+    justify-content: center;       /* centraliza na horizontal */
+    align-items: center;           /* centraliza na vertical */
 }
 
 
-div {
-    background-color: rgba(255, 255, 255, 0.85);
+/* Caixa de login que está dentro da background-img */
+.background-img > div {
+    background-color: rgba(255, 255, 255, 0.5); /* bem mais transparente */
     padding: 40px 30px;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -43,8 +48,10 @@ div {
     width: 100%;
     max-width: 400px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px); /* Translucidez suave para o fundo */
+    backdrop-filter: blur(10px); 
     color: #121212;
+    position: relative;
+    z-index: 1;
 }
 
 h2 {
@@ -54,13 +61,13 @@ h2 {
 }
 
 input, button {
-    width: 100%; /* agora respeita a largura da div */
+    width: 100%;
     padding: 15px;
     font-size: 16px;
     border-radius: 10px;
     border: 2px solid rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
-    background-color: rgba(255, 255, 255, 0.7); /* Fundo transparente para inputs */
+    background-color: rgba(255, 255, 255, 0.7);
     color: #121212;
 }
 
@@ -68,7 +75,7 @@ input:focus, button:focus {
     outline: none;
     border-color: #555;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    background-color: rgba(255, 255, 255, 0.8); /* Quando estiver focado, fica um pouco mais opaco */
+    background-color: rgba(255, 255, 255, 0.85);
 }
 
 button {
@@ -85,6 +92,6 @@ button:hover {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 
-.L1::placeholder {
+input::placeholder {
     color: #888;
 }

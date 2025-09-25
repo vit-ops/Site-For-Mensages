@@ -33,6 +33,19 @@ def salvar_livros(livros):
         for livro in livros.values():
             writer.writerow(livro)
 
+# Função para formatar data
+def formatar_data(data_str):
+    try:
+        # Se vier só números: 01092025 -> 01/09/2025
+        if data_str.isdigit() and len(data_str) == 8:
+            return datetime.strptime(data_str, "%d%m%Y").strftime("%d/%m/%Y")
+        # Se já vier com barra
+        elif "/" in data_str:
+            return datetime.strptime(data_str, "%d/%m/%Y").strftime("%d/%m/%Y")
+    except Exception:
+        return data_str
+    return data_str
+
 # Página de login
 @app.route('/')
 def login():
@@ -44,19 +57,15 @@ def verificar_login():
     usuario = request.form['usuario']
     senha = request.form['senha']
     
-    # Lista de usuários válidos
     usuarios_validos = ["victor", "mirian", "gabriela"]
-    
-    # Lista de senhas válidas (funcionam para todos os usuários)
     senhas_validas = ["12345678", "146533", "mirian", "142536"]
     
     if usuario.lower() in usuarios_validos and senha in senhas_validas:
         return redirect(url_for('admin'))
     else:
-        # Retorna a página de login com uma mensagem de erro
         return render_template('Login.html', erro="Usuário ou senha incorretos")
 
-# Página do Admin com busca
+# Página do Admin
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     livros = ler_livros()
@@ -97,7 +106,7 @@ def emprestar():
     codigo = data['codigo']
     nome = data['nome']
     sala = data['sala']
-    data_emprestimo = data['data_emprestimo']  # Recebendo a data do empréstimo
+    data_emprestimo = formatar_data(data['data_emprestimo'])
     
     livros = ler_livros()
     
@@ -105,7 +114,7 @@ def emprestar():
         livros[codigo]['emprestado'] = True
         livros[codigo]['nome'] = nome
         livros[codigo]['sala'] = sala
-        livros[codigo]['data_emprestimo'] = data_emprestimo  # Salvando a data de empréstimo
+        livros[codigo]['data_emprestimo'] = data_emprestimo
         salvar_livros(livros)
         return jsonify({'message': 'Livro emprestado com sucesso!'})
     else:
@@ -123,7 +132,7 @@ def devolver():
         livros[codigo]['emprestado'] = False
         livros[codigo]['nome'] = None
         livros[codigo]['sala'] = None
-        livros[codigo]['data_emprestimo'] = None  # Limpar a data de empréstimo quando devolver
+        livros[codigo]['data_emprestimo'] = None
         salvar_livros(livros)
         return jsonify({'message': 'Livro devolvido com sucesso!'})
     else:

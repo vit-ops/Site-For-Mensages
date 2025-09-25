@@ -119,14 +119,26 @@
             });
         });
 
+        // 🔹 Função para formatar data automaticamente
+        function formatarData(dataStr) {
+            let apenasDigitos = dataStr.replace(/\D/g, "");
+            if (apenasDigitos.length === 8) {
+                return apenasDigitos.replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3");
+            }
+            return dataStr;
+        }
+
         document.querySelectorAll('.emprestar-btn').forEach(button => {
             button.addEventListener('click', e => {
                 e.stopPropagation();
                 const codigo = button.getAttribute('data-codigo');
                 const nome = prompt("Nome da pessoa:");
                 const sala = prompt("Sala da pessoa:");
-                const data_emprestimo = prompt("Data do Empréstimo (DD/MM/YYYY):");
+                let data_emprestimo = prompt("Data do Empréstimo (DDMMYYYY ou DD/MM/YYYY):");
+
                 if(nome && sala && data_emprestimo){
+                    data_emprestimo = formatarData(data_emprestimo);
+
                     fetch('/emprestar', {
                         method:'POST',
                         headers:{'Content-Type':'application/json'},
