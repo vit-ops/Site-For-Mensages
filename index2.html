@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="icon" href="Zap.png">
+    <style>
+      html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; background: #f3f4f6; }
+      body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+      .card {
+        background: #fff;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        width: 320px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+      }
+      input {
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        font-size: 15px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .muted {
+        font-size: 13px;
+        color: #6b7280;
+        text-align: center;
+      }
+    </style>
+</head>
+<body>
+    <h2 id="title" style="text-align:center; margin-bottom: 20px;">Registrar Novo Usuário</h2>
+    
+    <div class="card">
+        <input id="username" type="text" placeholder="Nome de Usuário" autocomplete="username" />
+        <input id="password" type="text" placeholder="Senha" autocomplete="new-password" />
+        <button id="registerBtn">Registrar</button>
+        <div class="muted" id="msg"></div>
+    </div>
+
+    <script type="module">
+      // ========== CONFIGURE AQUI SE NECESSÁRIO ===========
+      const firebaseConfig = {
+        apiKey: "AIzaSyCeeMB1oKxVOu3oUJNcsnwRiy1Tq0tD0cc",
+        authDomain: "zapzap-af2ac.firebaseapp.com",
+        projectId: "zapzap-af2ac",
+        storageBucket: "zapzap-af2ac.firebasestorage.app",
+        messagingSenderId: "80406115977",
+        appId: "1:80406115977:web:aa5b44dea71ce1dccdb858"
+      };
+      // ===================================================
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const usernameEl = document.getElementById('username');
+      const passwordEl = document.getElementById('password');
+      const registerBtn = document.getElementById('registerBtn');
+      const msgEl = document.getElementById('msg');
+
+      function setMsg(text, isError = false) {
+        msgEl.textContent = text;
+        msgEl.style.color = isError ? '#b91c1c' : '#064e3b';
+      }
+
+      // Ao clicar em "Registrar": cria um novo usuário no Firestore
+      registerBtn.addEventListener('click', async () => {
+        const username = usernameEl.value.trim();
+        const password = passwordEl.value.trim();
+
+        if (!username || !password) {
+          setMsg('Por favor, preencha ambos os campos!', true);
+          return;
+        }
+
+        setMsg('Registrando...');
+
+        try {
+          const usersCollection = collection(db, 'users');
+          await addDoc(usersCollection, {
+            name: username,
+            senha: password
+          });
+
+          setMsg('Usuário registrado com sucesso!');
+
+          // Redireciona para a página de login ou outra página após o registro
+          setTimeout(() => {
+            window.location.href = 'index.html'; // Você pode redirecionar para qualquer página
+          }, 1500);
+        } catch (err) {
+          console.error('Erro ao registrar usuário:', err);
+          setMsg('Erro ao registrar usuário. Tente novamente.', true);
+        }
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZapChat</title>
+    <link rel="icon" href="Zap.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .Contacts {
+            width: 150px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100%;
+            padding-top: 60px;
+            border-right: 1px solid #ddd;
+        }
+        #mensagensContainer {
+            background-color: #f0f0f0;
+            flex-grow: 1;
+            height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .Contacts button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 auto 10px;
+            cursor: pointer;
+            width: 80%;
+        }
+        .Contacts button:hover {
+            background-color: #45a049;
+        }
+        #inputContainer {
+            padding: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        #messageInput {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #sendButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #sendButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="Contacts">
+        <button id="chamarUsuario">Chamar Usuario</button>
+    </div>
+    <div id="mensagensContainer"></div>
+
+    <!-- Input para enviar mensagens -->
+    <div id="inputContainer">
+        <input type="text" id="messageInput" placeholder="Digite sua mensagem" />
+        <button id="sendButton">Enviar</button>
+    </div>
+
+    <script type="module">
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeeMB1oKxVOu3oUJNcsnwRiy1Tq0tD0cc",
+            authDomain: "zapzap-af2ac.firebaseapp.com",
+            projectId: "zapzap-af2ac",
+            storageBucket: "zapzap-af2ac.appspot.com",
+            messagingSenderId: "80406115977",
+            appId: "1:80406115977:web:aa5b44dea71ce1dccdb858"
+        };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, setDoc, doc, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const user = urlParams.get('usuarioId');
+        document.title = `${user}`;
+
+        let currentConversationId = "";
+
+        async function ChamarUser() {
+            const userInput = prompt('Insira o nome do usuário:');
+            if (userInput) {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("name", "==", userInput));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach(doc => {
+                        const userName = doc.data().name;
+                        const button = document.createElement("button");
+                        button.textContent = userName;
+                        button.onclick = function() {
+                            buscarMensagens(user, userName);
+                        };
+                        document.querySelector(".Contacts").appendChild(button);
+                    });
+                } else {
+                    alert("Usuário não encontrado.");
+                }
+            }
+        }
+
+        async function buscarMensagens(user1, user2) {
+            const conversationId = gerarConversationId(user1, user2);
+            currentConversationId = conversationId;  // Salvar o ID da conversa atual
+            const mensagensRef = collection(db, "mensagens");
+            const q = query(mensagensRef, where("conversationId", "==", conversationId), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            const mensagensContainer = document.getElementById('mensagensContainer');
+            mensagensContainer.innerHTML = "";  // Limpar mensagens anteriores
+
+            if (querySnapshot.empty) {
+                await criarConversacao(user1, user2);  // Apenas cria a coleção, sem mensagens.
+            } else {
+                const mensagens = [];
+                querySnapshot.forEach(doc => {
+                    mensagens.push(doc.data());
+                });
+
+                // Exibir mensagens do fim para o começo
+                mensagens.reverse();  // Inverte a ordem para mostrar do fim para o começo
+
+                mensagens.forEach(mensagemData => {
+                    const mensagemDiv = document.createElement("div");
+                    mensagemDiv.textContent = `${mensagemData.remetente}: ${mensagemData.mensagem}`;
+                    mensagensContainer.appendChild(mensagemDiv);
+                });
+            }
+        }
+
+        // Função que gera o ID da conversa de forma que a ordem dos usuários não importe
+        function gerarConversationId(user1, user2) {
+            return [user1, user2].sort().join("|");
+        }
+
+        async function criarConversacao(user1, user2) {
+            const conversationId = gerarConversationId(user1, user2);
+            const mensagensContainer = document.getElementById('mensagensContainer');
+            const div = document.createElement("div");
+            div.textContent = "Conversação criada! Agora você pode começar a enviar mensagens.";
+            mensagensContainer.appendChild(div);
+            
+            const newConversation = {
+                conversationId: conversationId
+            };
+
+            await setDoc(doc(db, "mensagens", conversationId), newConversation);
+        }
+
+        async function enviarMensagem() {
+            const messageInput = document.getElementById('messageInput');
+            const mensagem = messageInput.value;
+            
+            if (mensagem && currentConversationId) {
+                const mensagemData = {
+                    conversationId: currentConversationId,
+                    remetente: user,
+                    mensagem: mensagem,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Adicionar a mensagem no Firestore
+                await addDoc(collection(db, "mensagens"), mensagemData);
+                messageInput.value = ""; // Limpar o campo de input
+
+                // Atualizar a tela com a nova mensagem
+                buscarMensagens(user, currentConversationId.split("|")[1]);
+            }
+        }
+
+        // Ouvir o botão de enviar
+        document.getElementById("sendButton").addEventListener("click", enviarMensagem);
+
+        // Chamar o usuário após o carregamento da página
+        document.addEventListener("DOMContentLoaded", function() {
+            const button = document.getElementById('chamarUsuario');
+            button.addEventListener('click', ChamarUser);
+        });
+    </script>
+</body>
+</html>
