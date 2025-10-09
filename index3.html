@@ -6,66 +6,111 @@
     <title>ZapChat</title>
     <link rel="icon" href="Zap.png">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .Contacts {
-            width: 150px;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            height: 100%;
-            padding-top: 60px;
-            border-right: 1px solid #ddd;
-        }
-        #mensagensContainer {
-            background-color: #f0f0f0;
-            flex-grow: 1;
-            height: 100%;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        .Contacts button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            margin: 0 auto 10px;
-            cursor: pointer;
-            width: 80%;
-        }
-        .Contacts button:hover {
-            background-color: #45a049;
-        }
-        #inputContainer {
-            padding: 10px;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-        }
-        #messageInput {
-            width: 80%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        #sendButton {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #sendButton:hover {
-            background-color: #45a049;
-        }
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.Contacts {
+    width: 150px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    padding-top: 60px;
+    border-right: 1px solid #ddd;
+}
+
+#mensagensContainer {
+    background-color: #f0f0f0;
+    flex-grow: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column-reverse; /* Mensagens aparecendo de baixo para cima */
+}
+
+#mensagensContainer div {
+    padding: 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    max-width: 70%; 
+    background-color: transparent; 
+    display: inline-block;
+    word-wrap: break-word;
+    font-size: 14px;
+    position: relative;
+}
+
+#mensagensContainer div p {
+    color: #fff; 
+    background-color: transparent;
+    padding: 20px;
+    font-size: 14px;
+
+    text-shadow: 
+        0 0 2px #e3e3e3,   /* Sombra sutil ao redor das letras */
+        0 0 10px rgba(227, 227, 227, 0.7); /* Sombra mais forte para destacar as bordas */
+}
+
+.messageSent {
+    background-color: #DCF8C6; /* Cor das mensagens enviadas */
+    align-self: flex-end; /* Alinha à direita */
+}
+
+.messageReceived {
+    background-color: #FFFFFF; /* Cor das mensagens recebidas */
+    align-self: flex-start; /* Alinha à esquerda */
+    border: 1px solid #ddd;
+}
+
+.Contacts button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin: 0 auto 10px;
+    cursor: pointer;
+    width: 80%;
+}
+
+.Contacts button:hover {
+    background-color: #45a049;
+}
+
+#inputContainer {
+    padding: 10px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+}
+
+#messageInput {
+    width: 80%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#sendButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#sendButton:hover {
+    background-color: #45a049;
+}
+
     </style>
 </head>
 <body>
@@ -127,30 +172,40 @@
 
         async function buscarMensagens(user1, user2) {
             const conversationId = gerarConversationId(user1, user2);
-            currentConversationId = conversationId;  // Salvar o ID da conversa atual
+            currentConversationId = conversationId;  
             const mensagensRef = collection(db, "mensagens");
             const q = query(mensagensRef, where("conversationId", "==", conversationId), orderBy("timestamp", "desc"));
             const querySnapshot = await getDocs(q);
             
             const mensagensContainer = document.getElementById('mensagensContainer');
-            mensagensContainer.innerHTML = "";  // Limpar mensagens anteriores
+            mensagensContainer.innerHTML = "";  
 
             if (querySnapshot.empty) {
-                await criarConversacao(user1, user2);  // Apenas cria a coleção, sem mensagens.
+                await criarConversacao(user1, user2);  
             } else {
                 const mensagens = [];
                 querySnapshot.forEach(doc => {
                     mensagens.push(doc.data());
                 });
 
-                // Exibir mensagens do fim para o começo
-                mensagens.reverse();  // Inverte a ordem para mostrar do fim para o começo
+                
+                mensagens.reverse();  
 
-                mensagens.forEach(mensagemData => {
-                    const mensagemDiv = document.createElement("div");
-                    mensagemDiv.textContent = `${mensagemData.remetente}: ${mensagemData.mensagem}`;
+            mensagens.forEach(mensagemData => {
+                const mensagemDiv = document.createElement("div");
+                const frase = document.createElement("p");  // Correção aqui
+                frase.textContent = `${mensagemData.mensagem}`;
+                if (mensagemData.remetente === user) {
+                    mensagemDiv.style.backgroundColor = "#90EE90";
+                    mensagemDiv.classList.add("messageSent");
+                } else {
+                    mensagemDiv.classList.add("messageReceived");
+                    frase.style.backgroundColor = "#F7A3A3";
+                }
+                    mensagemDiv.appendChild(frase);  
                     mensagensContainer.appendChild(mensagemDiv);
                 });
+
             }
         }
 
@@ -163,9 +218,7 @@
             const conversationId = gerarConversationId(user1, user2);
             const mensagensContainer = document.getElementById('mensagensContainer');
             const div = document.createElement("div");
-            div.textContent = "Conversação criada! Agora você pode começar a enviar mensagens.";
             mensagensContainer.appendChild(div);
-            
             const newConversation = {
                 conversationId: conversationId
             };
@@ -187,17 +240,16 @@
 
                 // Adicionar a mensagem no Firestore
                 await addDoc(collection(db, "mensagens"), mensagemData);
-                messageInput.value = ""; // Limpar o campo de input
+                messageInput.value = ""; 
 
-                // Atualizar a tela com a nova mensagem
+                
                 buscarMensagens(user, currentConversationId.split("|")[1]);
             }
         }
 
-        // Ouvir o botão de enviar
+      
         document.getElementById("sendButton").addEventListener("click", enviarMensagem);
 
-        // Chamar o usuário após o carregamento da página
         document.addEventListener("DOMContentLoaded", function() {
             const button = document.getElementById('chamarUsuario');
             button.addEventListener('click', ChamarUser);

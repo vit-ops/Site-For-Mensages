@@ -24,7 +24,6 @@
     button { padding:10px; border-radius:8px; border:none; background:#2563eb; color:white; cursor:pointer; font-weight:600; }
     .muted { font-size:13px; color:#6b7280; text-align:center; }
 
-    /* Estilo para o h2, movendo ele para o topo da página */
     #greeting {
       font-size: 24px;
       text-align: center;
@@ -48,7 +47,7 @@
   </div>
 
   <script type="module">
-    // ========== CONFIGURE AQUI SE NECESSÁRIO ===========
+
     const firebaseConfig = {
       apiKey: "AIzaSyCeeMB1oKxVOu3oUJNcsnwRiy1Tq0tD0cc",
       authDomain: "zapzap-af2ac.firebaseapp.com",
@@ -57,7 +56,7 @@
       messagingSenderId: "80406115977",
       appId: "1:80406115977:web:aa5b44dea71ce1dccdb858"
     };
-    // ===================================================
+
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import {
@@ -79,7 +78,6 @@
     const cardEl = document.getElementById('card');
     const greetingEl = document.getElementById('greeting');
 
-    // Guardará o documento do usuário quando encontrado
     let matchedUserDoc = null;
 
     function setMsg(text, isError = false) {
@@ -87,7 +85,7 @@
       msgEl.style.color = isError ? '#b91c1c' : '#064e3b';
     }
 
-    // Ao clicar em "Verificar usuário": procura na coleção 'users' por campo 'name' == username
+
     checkBtn.addEventListener('click', async () => {
       const name = usernameEl.value.trim();
       if (!name) { setMsg('Informe o nome de usuário.', true); return; }
@@ -101,32 +99,30 @@
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          // não encontrou: redireciona para index2.html
+
           setMsg('Usuário não encontrado. Redirecionando...', false);
-          // curto atraso para mostrar mensagem antes do redirect
+
           setTimeout(() => { window.location.href = 'index2.html'; }, 600);
           return;
         }
 
-        // Se houver múltiplos resultados, pega o primeiro (assumimos uniqueness do name)
         const docSnap = snap.docs[0];
         matchedUserDoc = docSnap.data();
-        const usuarioId = matchedUserDoc.name; // Definindo o usuárioId
+        const usuarioId = matchedUserDoc.name;
 
-        // Esconde o campo de nome e o botão de verificar
+
         usernameEl.style.display = 'none';
         checkBtn.style.display = 'none';
 
-        // Exibe o nome do usuário no título e no h2
         document.title = `${matchedUserDoc.name}`;
         greetingEl.textContent = `${matchedUserDoc.name}!`;
         greetingEl.style.display = 'block';
 
-        // Mostra o campo de senha para verificação
+
         passwordEl.style.display = 'block';
         loginBtn.style.display = 'block';
         setMsg('Usuário encontrado. Informe a senha.');
-        // opcional: focar campo senha
+
         passwordEl.focus();
       } catch (err) {
         console.error('Erro ao consultar Firestore:', err);
@@ -136,14 +132,11 @@
       }
     });
 
-    // Ao clicar em "Entrar": compara senha informada com o campo 'senha' do documento
+
     loginBtn.addEventListener('click', () => {
       if (!matchedUserDoc) { setMsg('Primeiro verifique o usuário.', true); return; }
       const typed = passwordEl.value;
       if (!typed) { setMsg('Informe a senha.', true); return; }
-
-      // COMPARAÇÃO SIMPLES: igualdade direta com o campo 'senha'
-      // (se você usou hashing, compare adequadamente no backend)
       if (typed === matchedUserDoc.senha) {
         setMsg('Senha correta — logado com sucesso.');
         window.location.href = `index3.html?usuarioId=${matchedUserDoc.name}`;
@@ -152,7 +145,7 @@
       }
     });
 
-    // Permitir pressionar Enter no campo username para checar, e no password para logar
+
     usernameEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkBtn.click(); });
     passwordEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
   </script>
